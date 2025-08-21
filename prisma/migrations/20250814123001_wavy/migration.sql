@@ -2,7 +2,7 @@
 CREATE TYPE "public"."MessageType" AS ENUM ('RESULT', 'ERROR');
 
 -- CreateEnum
-CREATE TYPE "public"."MessageRole" AS ENUM ('USER', 'ASSITANT');
+CREATE TYPE "public"."MessageRole" AS ENUM ('USER', 'ASSISTANT');
 
 -- CreateTable
 CREATE TABLE "public"."Message" (
