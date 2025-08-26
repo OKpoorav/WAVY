@@ -14,11 +14,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                 String             @id
+  email              String?            @unique
+  subscriptionId     String?            @unique
+  subscriptionStatus SubscriptionStatus @default(FREE)
+  currentPeriodEnd   DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  projects Project[]
+}
+
+enum SubscriptionStatus {
+  FREE
+  PENDING
+  ACTIVE
+  CANCELLED
+}
+
 model Project {
   id        String    @id @default(uuid())
   name      String
   userId    String
-  createdAT DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   messages  Message[]
 }
@@ -31,6 +51,12 @@ enum MessageType {
 enum MessageRole {
   USER
   ASSITANT
+}
+
+model Usage {
+  key    String    @id
+  points Int
+  expire DateTime?
 }
 
 model Message {

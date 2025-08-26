@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { ProjectForm } from "@/modules/projects/ui/home/ui/components/project-forms";
+import { ProjectForm } from "@/modules/home/ui/components/project-forms";
 
-import { ProjectList } from "@/modules/projects/ui/home/ui/components/project-list";
+import { ProjectList } from "@/modules/home/ui/components/project-list";
 
 export default function Home() {
   return (

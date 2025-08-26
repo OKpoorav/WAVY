@@ -21,9 +21,10 @@ import { UserControl } from "@/components/user-control";
 
 interface Props {
   projectId: string;
+  hasAccess: boolean;
 }
 
-export const ProjectView = ({ projectId }: Props) => {
+export const ProjectView = ({ projectId, hasAccess }: Props) => {
   const trpc = useTRPC();
   const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
   const [tabState, setTabState] = useState<"preview" | "code">("preview");
@@ -64,12 +65,14 @@ export const ProjectView = ({ projectId }: Props) => {
                 </TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-x-2">
-                <Button asChild size="sm" variant="default">
-                  <Link href="/pricing">
-                    <CrownIcon></CrownIcon>
-                    Upgrade
-                  </Link>
-                </Button>
+                {!hasAccess && (
+                  <Button asChild size="sm" variant="default">
+                    <Link href="/pricing">
+                      <CrownIcon></CrownIcon>
+                      Upgrade
+                    </Link>
+                  </Button>
+                )}
                 <UserControl />
               </div>
             </div>
