@@ -65,8 +65,8 @@ export const MessageForm = ({ projectId }: Props) => {
       <Form {...form}>
         {showUsage && (
           <Usage
-            points={usage.remainingPoints}
-            msBeforeNext={usage.msBeforeNext}
+            points={usage.remainingPoints ?? 0}
+            msBeforeNext={usage.msBeforeNext!}
             hasAccess={usage.hasAccess}
           />
         )}

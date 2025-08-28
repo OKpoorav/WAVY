@@ -5,6 +5,30 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useClerk } from "@clerk/nextjs";
 import { toast } from "sonner";
+interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+  razorpay_subscription_id?: string;
+}
+
+interface RazorpayOptions {
+  key: string;
+  subscription_id: string;
+  name: string;
+  description: string;
+  handler: (response: RazorpayResponse) => void;
+  theme: { color: string };
+}
+
+interface RazorpayInstance {
+  open(): void;
+}
+
+declare global {
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
+  }
+}
 
 export default function SubscriptionPage() {
   const trpc = useTRPC();
@@ -37,7 +61,7 @@ export default function SubscriptionPage() {
           subscription_id: sub.id,
           name: "Your App Name",
           description: "Monthly Subscription",
-          handler: async (response) => {
+          handler: async (response: RazorpayResponse) => {
             verifyMutation.mutate({
               subscriptionId: sub.id,
               paymentId: response.razorpay_payment_id,
@@ -47,7 +71,7 @@ export default function SubscriptionPage() {
           theme: { color: "#3E3E3E" }, // Claude-like neutral dark theme
         };
 
-        const rzp = new (window as any).Razorpay(options);
+        const rzp = new window.Razorpay(options);
         rzp.open();
       },
       onError: (err) => {
@@ -62,7 +86,7 @@ export default function SubscriptionPage() {
 
   const verifyMutation = useMutation(
     trpc.subscriptions.verify.mutationOptions({
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(trpc.projects.getMany.queryOptions());
         toast.success("Subscription activated successfully!");
       },
@@ -108,7 +132,7 @@ export default function SubscriptionPage() {
           </p>
           <p className="text-3xl font-bold text-[#FACC15] mb-6">₹100/month</p>
           <button
-            onClick={() => createMutation.mutate({})}
+            onClick={() => createMutation.mutate()}
             disabled={createMutation.isPending || isLoading}
             className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-6 rounded-xl disabled:opacity-50 transition"
           >
